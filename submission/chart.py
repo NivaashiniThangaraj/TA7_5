@@ -2,61 +2,47 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from PIL import Image
 
-# Set random seed for reproducible results
+# Synthetic product performance data
 np.random.seed(42)
-
-# Generate synthetic data for product performance insights
 n_products = 10
 product_data = {
     'product': [f'Product {i+1}' for i in range(n_products)],
-    'sales': np.random.randint(500, 5000, n_products),
-    'satisfaction': np.random.uniform(3.0, 5.0, n_products)  # Customer rating out of 5
+    'sales': np.random.randint(500, 5000, n_products)
 }
-
-# Create DataFrame
 df = pd.DataFrame(product_data)
 
-# Set Seaborn style and context
+# Styling
 sns.set_style("whitegrid")
 sns.set_context("notebook", font_scale=1.2)
 
-# Set figure size for 512x512 output
+# Create figure (512x512 = 8 inches * 64 dpi)
 plt.figure(figsize=(8, 8))
 
-# Create a Seaborn barplot
-sns.barplot(
-    data=df,
-    x='product',
-    y='sales',
-    palette='Set2'
-)
+# Barplot
+sns.barplot(data=df, x="product", y="sales", palette="Set2")
 
-# Customize the plot professionally
-plt.title('Product Performance Insights\nSales by Product', 
-          fontsize=16, fontweight='bold', pad=20)
-plt.xlabel('Product', fontsize=14, fontweight='semibold')
-plt.ylabel('Sales (Units)', fontsize=14, fontweight='semibold')
+# Titles & labels
+plt.title("Product Performance Insights\nSales by Product",
+          fontsize=16, fontweight="bold", pad=20)
+plt.xlabel("Product", fontsize=14, fontweight="semibold")
+plt.ylabel("Sales (Units)", fontsize=14, fontweight="semibold")
+plt.xticks(rotation=30, ha="right")
 
-# Rotate x-axis labels for readability
-plt.xticks(rotation=30, ha='right')
-
-# Add subtle grid and styling
-plt.grid(True, axis='y', alpha=0.3)
+# Grid & layout
+plt.grid(True, axis="y", alpha=0.3)
 sns.despine()
-
-# Ensure tight layout
 plt.tight_layout()
 
-# Save chart as 512x512 (dpi=64 × 8 in = 512 px)
-plt.savefig('chart.png', dpi=64, bbox_inches='tight')
+# Save at 512x512
+plt.savefig("chart.png", dpi=64)   # no bbox_inches="tight"
+plt.close()
 
-# Display summary statistics
-print("Product Performance Insights")
-print("=" * 50)
-print(f"Total Products: {len(df)}")
-print(f"Average Sales: {df['sales'].mean():.2f} units")
-print(f"Average Satisfaction: {df['satisfaction'].mean():.2f}/5")
-print("\nChart generated successfully with Seaborn barplot!")
+# Double-check dimensions
+img = Image.open("chart.png")
+if img.size != (512, 512):
+    img = img.resize((512, 512), Image.Resampling.LANCZOS)
+    img.save("chart.png")
 
-plt.show()
+print("✅ chart.png generated successfully with size:", Image.open("chart.png").size)
